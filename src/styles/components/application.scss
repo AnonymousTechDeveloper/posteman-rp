@@ -1,0 +1,220 @@
+// Application form specific styles
+.application-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $color-background 0%, rgba($color-secondary, 0.3) 100%);
+  @include flex-center;
+  padding: $spacing-4;
+  
+  @include dark-mode {
+    background: linear-gradient(135deg, $color-dark-background 0%, rgba($color-dark-card, 0.3) 100%);
+  }
+}
+
+.application-container {
+  width: 100%;
+  max-width: 42rem;
+}
+
+.application-card {
+  @include card-base;
+  border: none;
+  
+  .application-header {
+    padding-bottom: $spacing-6;
+    border-bottom: 1px solid $color-border;
+    margin-bottom: $spacing-6;
+    
+    .header-controls {
+      @include flex-between;
+      margin-bottom: $spacing-4;
+      
+      .back-button {
+        @include button-base;
+        background: transparent;
+        color: $color-muted-foreground;
+        padding: $spacing-2;
+        
+        &:hover {
+          background-color: $color-muted;
+          color: $color-foreground;
+        }
+      }
+    }
+    
+    .application-title {
+      font-size: $font-size-2xl;
+      font-weight: $font-weight-bold;
+      color: $color-foreground;
+      margin-bottom: $spacing-1;
+    }
+    
+    .application-description {
+      color: $color-muted-foreground;
+      font-size: $font-size-base;
+    }
+    
+    .progress-section {
+      margin-top: $spacing-4;
+      
+      .progress-header {
+        @include flex-between;
+        margin-bottom: $spacing-2;
+        
+        .progress-label {
+          font-size: $font-size-sm;
+          color: $color-muted-foreground;
+        }
+        
+        .progress-percentage {
+          font-size: $font-size-sm;
+          font-weight: $font-weight-medium;
+          color: $color-foreground;
+        }
+      }
+      
+      .progress-bar {
+        width: 100%;
+        height: 0.5rem;
+        background-color: $color-muted;
+        border-radius: $radius-lg;
+        overflow: hidden;
+        
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, $color-primary 0%, $color-accent 100%);
+          border-radius: $radius-lg;
+          transition: width $transition-slow;
+        }
+      }
+    }
+  }
+  
+  .application-form {
+    .form-group {
+      margin-bottom: $spacing-6;
+      
+      .form-label {
+        display: flex;
+        align-items: center;
+        gap: $spacing-2;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-medium;
+        color: $color-foreground;
+        margin-bottom: $spacing-2;
+        
+        .validation-icon {
+          width: 1rem;
+          height: 1rem;
+          
+          &.success {
+            color: #22c55e;
+          }
+        }
+      }
+      
+      .form-input {
+        @include input-base;
+        height: 2.75rem;
+        
+        &.error {
+          border-color: $color-destructive;
+          
+          &:focus {
+            border-color: $color-destructive;
+            box-shadow: 0 0 0 3px rgba($color-destructive, 0.1);
+          }
+        }
+        
+        &.success {
+          border-color: #22c55e;
+        }
+      }
+      
+      .select-trigger {
+        @include input-base;
+        height: 2.75rem;
+        @include flex-between;
+        cursor: pointer;
+        
+        &.error {
+          border-color: $color-destructive;
+          
+          &:focus {
+            border-color: $color-destructive;
+            box-shadow: 0 0 0 3px rgba($color-destructive, 0.1);
+          }
+        }
+        
+        &.success {
+          border-color: #22c55e;
+        }
+        
+        .select-value {
+          color: $color-foreground;
+          
+          &.placeholder {
+            color: $color-muted-foreground;
+          }
+        }
+        
+        .select-icon {
+          width: 1rem;
+          height: 1rem;
+          color: $color-muted-foreground;
+          transition: transform $transition-fast;
+          
+          &.open {
+            transform: rotate(180deg);
+          }
+        }
+      }
+      
+      .form-error {
+        display: flex;
+        align-items: center;
+        color: $color-destructive;
+        font-size: $font-size-sm;
+        margin-top: $spacing-2;
+        
+        svg {
+          width: 1rem;
+          height: 1rem;
+          margin-right: $spacing-2;
+        }
+      }
+    }
+    
+    .submit-button {
+      @include button-primary;
+      width: 100%;
+      height: 2.75rem;
+      font-size: $font-size-base;
+      font-weight: $font-weight-medium;
+      
+      &:disabled {
+        background-color: $color-muted;
+        color: $color-muted-foreground;
+        cursor: not-allowed;
+      }
+      
+      .loading-content {
+        display: flex;
+        align-items: center;
+        gap: $spacing-2;
+        
+        .spinner {
+          width: 1rem;
+          height: 1rem;
+          border: 2px solid rgba($color-primary-foreground, 0.3);
+          border-top: 2px solid $color-primary-foreground;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
