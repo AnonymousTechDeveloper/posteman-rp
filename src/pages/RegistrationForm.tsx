@@ -241,8 +241,8 @@ const RegistrationForm = () => {
                     <div
                       key={vertical.id}
                       className={`flex items-start space-x-3 p-4 rounded-lg border transition-all duration-200 hover:bg-brand-gray/50 ${formData.verticals.includes(vertical.id)
-                          ? "border-primary bg-primary/10"
-                          : "border-brand-gray-light"
+                        ? "border-primary bg-primary/10"
+                        : "border-brand-gray-light"
                         }`}
                     >
                       <Checkbox
