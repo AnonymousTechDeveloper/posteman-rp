@@ -8,6 +8,7 @@ import RegistrationForm from "./pages/RegistrationForm";
 import Dashboard from "./pages/Dashboard";
 import VerticalDetails from "./pages/VerticalDetails";
 import NotFound from "./pages/NotFound";
+import Home from "./pages/home/Home";
 
 const queryClient = new QueryClient();
 
@@ -18,7 +19,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<SignIn />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/signin" element={<SignIn />} />
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/vertical/:verticalId" element={<VerticalDetails />} />
