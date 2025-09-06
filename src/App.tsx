@@ -1,22 +1,32 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
-import SignInPage from "./pages/SignInPage"
-import ApplicationPage from "./pages/ApplicationPage"
-import DashboardPage from "./pages/DashboardPage"
-import "./App.css"
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import SignIn from "./pages/SignIn";
+import RegistrationForm from "./pages/RegistrationForm";
+import Dashboard from "./pages/Dashboard";
+import VerticalDetails from "./pages/VerticalDetails";
+import NotFound from "./pages/NotFound";
 
-function App() {
-  return (
-    <Router>
-      <div className="App">
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/signin" replace />} />
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/application" element={<ApplicationPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/" element={<SignIn />} />
+          <Route path="/register" element={<RegistrationForm />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/vertical/:verticalId" element={<VerticalDetails />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
-      </div>
-    </Router>
-  )
-}
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
-export default App
+export default App;
