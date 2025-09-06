@@ -21,12 +21,14 @@ const VERTICALS = [
 interface FormData {
   name: string;
   email: string;
+  phone: string;
   verticals: string[];
 }
 
 interface FormErrors {
   name?: string;
   email?: string;
+  phone?: string;
   verticals?: string;
 }
 
@@ -36,6 +38,7 @@ const RegistrationForm = () => {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
+    phone: "",
     verticals: [],
   });
   const [errors, setErrors] = useState<FormErrors>({});
@@ -59,6 +62,14 @@ const RegistrationForm = () => {
       newErrors.email = "Please enter a valid email address";
     }
 
+    // Phone validation
+    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!phoneRegex.test(formData.phone.replace(/\s/g, ''))) {
+      newErrors.phone = "Please enter a valid phone number";
+    }
+
     // Verticals validation
     if (formData.verticals.length === 0) {
       newErrors.verticals = "Please select at least one vertical";
@@ -71,11 +82,11 @@ const RegistrationForm = () => {
   const handleVerticalChange = (verticalId: string, checked: boolean) => {
     setFormData(prev => ({
       ...prev,
-      verticals: checked 
+      verticals: checked
         ? [...prev.verticals, verticalId]
         : prev.verticals.filter(id => id !== verticalId)
     }));
-    
+
     // Clear verticals error when user selects something
     if (checked && errors.verticals) {
       setErrors(prev => ({ ...prev, verticals: undefined }));
@@ -84,7 +95,7 @@ const RegistrationForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       toast({
         title: "Validation Error",
@@ -95,18 +106,18 @@ const RegistrationForm = () => {
     }
 
     setIsSubmitting(true);
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Store user data in localStorage for demo
     localStorage.setItem("userData", JSON.stringify(formData));
-    
+
     toast({
       title: "Registration Successful!",
       description: "Welcome to RecruitPortal. Redirecting to your dashboard...",
     });
-    
+
     setTimeout(() => {
       navigate("/dashboard");
     }, 1500);
@@ -148,9 +159,8 @@ const RegistrationForm = () => {
                     setFormData(prev => ({ ...prev, name: e.target.value }));
                     if (errors.name) setErrors(prev => ({ ...prev, name: undefined }));
                   }}
-                  className={`bg-brand-gray border-brand-gray-light text-white placeholder:text-gray-400 focus:border-primary ${
-                    errors.name ? "border-destructive focus:border-destructive" : ""
-                  }`}
+                  className={`bg-brand-gray border-brand-gray-light text-white placeholder:text-gray-400 focus:border-primary ${errors.name ? "border-destructive focus:border-destructive" : ""
+                    }`}
                   aria-describedby={errors.name ? "name-error" : undefined}
                 />
                 {errors.name && (
@@ -174,14 +184,38 @@ const RegistrationForm = () => {
                     setFormData(prev => ({ ...prev, email: e.target.value }));
                     if (errors.email) setErrors(prev => ({ ...prev, email: undefined }));
                   }}
-                  className={`bg-brand-gray border-brand-gray-light text-white placeholder:text-gray-400 focus:border-primary ${
-                    errors.email ? "border-destructive focus:border-destructive" : ""
-                  }`}
+                  className={`bg-brand-gray border-brand-gray-light text-white placeholder:text-gray-400 focus:border-primary ${errors.email ? "border-destructive focus:border-destructive" : ""
+                    }`}
                   aria-describedby={errors.email ? "email-error" : undefined}
                 />
                 {errors.email && (
                   <p id="email-error" className="text-sm text-destructive" role="alert">
                     {errors.email}
+                  </p>
+                )}
+              </div>
+
+              {/* Phone Field */}
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-white">
+                  Phone Number <span className="text-primary">*</span>
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="Enter your phone number"
+                  value={formData.phone}
+                  onChange={(e) => {
+                    setFormData(prev => ({ ...prev, phone: e.target.value }));
+                    if (errors.phone) setErrors(prev => ({ ...prev, phone: undefined }));
+                  }}
+                  className={`bg-brand-gray border-brand-gray-light text-white placeholder:text-gray-400 focus:border-primary ${errors.phone ? "border-destructive focus:border-destructive" : ""
+                    }`}
+                  aria-describedby={errors.phone ? "phone-error" : undefined}
+                />
+                {errors.phone && (
+                  <p id="phone-error" className="text-sm text-destructive" role="alert">
+                    {errors.phone}
                   </p>
                 )}
               </div>
@@ -196,8 +230,8 @@ const RegistrationForm = () => {
                     Select all areas that interest you
                   </p>
                 </div>
-                
-                <div 
+
+                <div
                   className="grid grid-cols-1 md:grid-cols-2 gap-4"
                   role="group"
                   aria-labelledby="verticals-label"
@@ -206,24 +240,23 @@ const RegistrationForm = () => {
                   {VERTICALS.map((vertical) => (
                     <div
                       key={vertical.id}
-                      className={`flex items-start space-x-3 p-4 rounded-lg border transition-all duration-200 hover:bg-brand-gray/50 ${
-                        formData.verticals.includes(vertical.id)
+                      className={`flex items-start space-x-3 p-4 rounded-lg border transition-all duration-200 hover:bg-brand-gray/50 ${formData.verticals.includes(vertical.id)
                           ? "border-primary bg-primary/10"
                           : "border-brand-gray-light"
-                      }`}
+                        }`}
                     >
                       <Checkbox
                         id={vertical.id}
                         checked={formData.verticals.includes(vertical.id)}
-                        onCheckedChange={(checked) => 
+                        onCheckedChange={(checked) =>
                           handleVerticalChange(vertical.id, checked === true)
                         }
                         className="mt-0.5"
                         aria-describedby={`${vertical.id}-description`}
                       />
                       <div className="space-y-1 flex-1">
-                        <Label 
-                          htmlFor={vertical.id} 
+                        <Label
+                          htmlFor={vertical.id}
                           className="text-white font-medium cursor-pointer"
                         >
                           {vertical.label}
@@ -231,7 +264,7 @@ const RegistrationForm = () => {
                             <CheckCircle className="inline-block ml-2 h-4 w-4 text-primary" />
                           )}
                         </Label>
-                        <p 
+                        <p
                           id={`${vertical.id}-description`}
                           className="text-sm text-gray-400"
                         >
@@ -241,7 +274,7 @@ const RegistrationForm = () => {
                     </div>
                   ))}
                 </div>
-                
+
                 {errors.verticals && (
                   <p id="verticals-error" className="text-sm text-destructive" role="alert">
                     {errors.verticals}
@@ -250,8 +283,8 @@ const RegistrationForm = () => {
               </div>
 
               {/* Submit Button */}
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full bg-gradient-primary hover:bg-brand-orange-dark text-white shadow-orange transition-all duration-300 group"
                 disabled={isSubmitting}
               >

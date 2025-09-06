@@ -45,7 +45,18 @@ const SignIn = () => {
                   className="bg-brand-gray border-brand-gray-light text-white placeholder:text-gray-400 focus:border-primary"
                 />
               </div>
-              
+
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-white">Phone Number</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="Enter your phone number"
+                  required
+                  className="bg-brand-gray border-brand-gray-light text-white placeholder:text-gray-400 focus:border-primary"
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-white">Password</Label>
                 <Input
@@ -57,8 +68,8 @@ const SignIn = () => {
                 />
               </div>
 
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full bg-gradient-primary hover:bg-brand-orange-dark text-white shadow-orange transition-all duration-300 group"
               >
                 Continue to Registration
