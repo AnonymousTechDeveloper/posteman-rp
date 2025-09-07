@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
     Sidebar,
     SidebarContent,
@@ -15,42 +15,10 @@ import { Button } from "@/components/ui/button";
 import {
     Users,
     LogOut,
-    Brain,
-    Zap,
-    Code,
-    Server,
-    Palette,
-    Gamepad2,
-    Calendar,
     LayoutDashboard,
 } from "lucide-react";
-
-const VERTICAL_ICONS = {
-    "ai-ml": Brain,
-    "neurotech": Zap,
-    "frontend": Code,
-    "backend": Server,
-    "design": Palette,
-    "gamedev": Gamepad2,
-    "events": Calendar,
-};
-
-const VERTICAL_LABELS = {
-    "ai-ml": "AI/ML",
-    "neurotech": "NeuroTech",
-    "frontend": "Frontend",
-    "backend": "Backend",
-    "design": "Design",
-    "gamedev": "Game Dev",
-    "events": "Events",
-};
-
-interface UserData {
-    name: string;
-    email: string;
-    phone: string;
-    verticals: string[];
-}
+import { VERTICAL_ICONS, VERTICAL_LABELS } from "@/constants/verticals";
+import { UserData } from "@/types/common";
 
 interface AppSidebarProps {
     userData: UserData | null;
@@ -59,6 +27,7 @@ interface AppSidebarProps {
 
 const AppSidebar = ({ userData, currentVerticalId }: AppSidebarProps) => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { state } = useSidebar();
     const collapsed = state === "collapsed";
 
@@ -111,6 +80,7 @@ const AppSidebar = ({ userData, currentVerticalId }: AppSidebarProps) => {
                             <SidebarMenuItem>
                                 <SidebarMenuButton
                                     onClick={() => navigate("/dashboard")}
+                                    isActive={location.pathname === "/dashboard"}
                                     className="text-white hover:bg-brand-gray hover:text-primary data-[active=true]:bg-brand-gray data-[active=true]:text-primary mx-1 rounded-md"
                                     tooltip={collapsed ? "Dashboard" : undefined}
                                 >

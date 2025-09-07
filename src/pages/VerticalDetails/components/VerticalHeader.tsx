@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, CheckCircle, CheckCircle2, Clock, XCircle, Upload } from "lucide-react";
 import { VerticalData } from "../types";
 import { VERTICAL_ICONS } from "../constants";
+import { DetailedApplication } from "@/types/common";
 
 interface VerticalHeaderProps {
     verticalData: VerticalData;
@@ -11,6 +12,7 @@ interface VerticalHeaderProps {
     onApply: () => void;
     onOpenSubmission: () => void;
     applicationStatus: string;
+    detailedApplication: DetailedApplication | null;
 }
 
 const VerticalHeader = ({
@@ -20,6 +22,7 @@ const VerticalHeader = ({
     onApply,
     onOpenSubmission,
     applicationStatus,
+    detailedApplication,
 }: VerticalHeaderProps) => {
     const Icon = VERTICAL_ICONS[verticalId as keyof typeof VERTICAL_ICONS];
 
@@ -33,6 +36,10 @@ const VerticalHeader = ({
                 return <CheckCircle2 className="h-4 w-4" />;
             case 'rejected':
                 return <XCircle className="h-4 w-4" />;
+            case 'in-progress':
+                return <Clock className="h-4 w-4" />;
+            case 'accepted':
+                return <CheckCircle2 className="h-4 w-4" />;
             default:
                 return <Clock className="h-4 w-4" />;
         }
@@ -48,6 +55,10 @@ const VerticalHeader = ({
                 return 'text-green-500';
             case 'rejected':
                 return 'text-red-500';
+            case 'in-progress':
+                return 'text-blue-500';
+            case 'accepted':
+                return 'text-green-500';
             default:
                 return 'text-gray-500';
         }
@@ -63,6 +74,10 @@ const VerticalHeader = ({
                 return 'Submitted';
             case 'rejected':
                 return 'Rejected';
+            case 'in-progress':
+                return 'In Progress';
+            case 'accepted':
+                return 'Accepted';
             default:
                 return 'Unknown';
         }
@@ -92,23 +107,25 @@ const VerticalHeader = ({
                         <div>
                             <h1 className="text-4xl font-bold text-white">{verticalData.name}</h1>
                             <p className="text-white/80 text-lg">Vertical</p>
-                            <p className="text-white/90 mt-2">Round {verticalData.currentRound} in Progress</p>
+                            {detailedApplication?.currentRound && (
+                                <p className="text-white/90 mt-2">Round {detailedApplication.currentRound.roundNumber} in Progress</p>
+                            )}
                         </div>
                     </div>
 
                     <div className="flex space-x-8 text-white">
-                        <div className="text-center">
-                            <div className="text-2xl font-bold">98</div>
-                            <div className="text-sm opacity-80">Applicants</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-2xl font-bold">15</div>
-                            <div className="text-sm opacity-80">Selected</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-2xl font-bold">{verticalData.currentRound}</div>
-                            <div className="text-sm opacity-80">Current Round</div>
-                        </div>
+                        {detailedApplication?.currentRound && (
+                            <div className="text-center">
+                                <div className="text-4xl font-bold text-yellow-400">Round {detailedApplication.currentRound.roundNumber}</div>
+                                <div className="text-sm opacity-80">Current Round</div>
+                            </div>
+                        )}
+                        {detailedApplication?.lastParticipatedRound && (
+                            <div className="text-center">
+                                <div className="text-4xl font-bold text-red-400">Round {detailedApplication.lastParticipatedRound.roundNumber}</div>
+                                <div className="text-sm opacity-80">Last Participated</div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -116,15 +133,15 @@ const VerticalHeader = ({
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                         <CardContent className="p-4">
                             <div className="text-white font-medium mb-2">Application Status</div>
-                            <div className={`flex items-center space-x-2 ${getStatusColor(applicationStatus)}`}>
-                                {getStatusIcon(applicationStatus)}
-                                <span className="text-sm">{getStatusText(applicationStatus)}</span>
+                            <div className={`flex items-center space-x-2 ${getStatusColor(detailedApplication?.overallStatus || 'not_applied')}`}>
+                                {getStatusIcon(detailedApplication?.overallStatus || 'not_applied')}
+                                <span className="text-sm">{getStatusText(detailedApplication?.overallStatus || 'not_applied')}</span>
                             </div>
                         </CardContent>
                     </Card>
 
                     <div className="flex space-x-4">
-                        {applicationStatus === 'not_applied' && (
+                        {detailedApplication?.overallStatus === 'not_applied' && (
                             <Button
                                 onClick={onApply}
                                 className="bg-white text-purple-600 hover:bg-white/90"
@@ -133,24 +150,24 @@ const VerticalHeader = ({
                             </Button>
                         )}
 
-                        {applicationStatus === 'applied' && (
+                        {detailedApplication?.overallStatus === 'in-progress' && detailedApplication.currentRound && (
                             <Button
                                 onClick={onOpenSubmission}
                                 className="bg-white text-purple-600 hover:bg-white/90"
                             >
                                 <Upload className="mr-2 h-4 w-4" />
-                                Submit Application
+                                Submit Task
                             </Button>
                         )}
 
-                        {applicationStatus === 'submitted' && (
+                        {detailedApplication?.overallStatus === 'accepted' && (
                             <div className="flex items-center space-x-2 text-green-400">
                                 <CheckCircle2 className="h-4 w-4" />
-                                <span className="text-sm">Application Submitted</span>
+                                <span className="text-sm">Application Accepted</span>
                             </div>
                         )}
 
-                        {applicationStatus === 'rejected' && (
+                        {detailedApplication?.overallStatus === 'rejected' && (
                             <div className="flex items-center space-x-2 text-red-400">
                                 <XCircle className="h-4 w-4" />
                                 <span className="text-sm">Application Rejected</span>

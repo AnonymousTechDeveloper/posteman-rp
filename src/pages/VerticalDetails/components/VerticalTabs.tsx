@@ -2,12 +2,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TaskContent from "./TaskContent";
 import AnnouncementsContent from "./AnnouncementsContent";
 import { VerticalData } from "../types";
+import { DetailedApplication } from "@/types/common";
 
 interface VerticalTabsProps {
     verticalData: VerticalData;
+    detailedApplication: DetailedApplication | null;
 }
 
-const VerticalTabs = ({ verticalData }: VerticalTabsProps) => {
+const VerticalTabs = ({ verticalData, detailedApplication }: VerticalTabsProps) => {
     return (
         <Tabs defaultValue="tasks" className="space-y-6">
             <TabsList className="bg-brand-gray border-brand-gray-light">
@@ -20,7 +22,7 @@ const VerticalTabs = ({ verticalData }: VerticalTabsProps) => {
             </TabsList>
 
             <TabsContent value="tasks" className="space-y-6">
-                <TaskContent verticalData={verticalData} />
+                <TaskContent verticalData={verticalData} detailedApplication={detailedApplication} />
             </TabsContent>
 
             <TabsContent value="announcements" className="space-y-6">

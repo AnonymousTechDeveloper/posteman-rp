@@ -10,9 +10,12 @@ import { ArrowLeft } from "lucide-react";
 import { UserData, VerticalData, SubmissionData } from "./types";
 import { VERTICAL_ICONS } from "./constants";
 import { createMockVerticalData } from "./utils";
+import { DetailedApplication } from "@/types/common";
+import { applicantApi } from "@/services/api";
 
 // Import components
 import { VerticalHeader, SubmissionDialog, VerticalTabs } from "./components";
+import { TaskSubmissionForm } from "./components/TaskSubmissionForm";
 
 
 const VerticalDetails = () => {
@@ -20,11 +23,7 @@ const VerticalDetails = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [verticalData, setVerticalData] = useState<VerticalData | null>(null);
-  const [submissionData, setSubmissionData] = useState<SubmissionData>({
-    githubLink: '',
-    documents: [],
-    notes: ''
-  });
+  const [detailedApplication, setDetailedApplication] = useState<DetailedApplication | null>(null);
   const [isSubmissionDialogOpen, setIsSubmissionDialogOpen] = useState(false);
   const { isOpen: sidebarOpen, setOpen: setSidebarOpen } = useSidebarStore();
 
@@ -56,6 +55,46 @@ const VerticalDetails = () => {
       setVerticalData(mockVerticalData);
     }
   }, [verticalId]);
+
+  // Fetch detailed application data
+  useEffect(() => {
+    const fetchDetailedApplication = async () => {
+      if (verticalId && userData) {
+        try {
+          // Find the application ID for this vertical
+          const applicationIdMap: Record<string, string> = {
+            'backend': 'backend-app-123',
+            'frontend': 'frontend-app-456',
+            'ai-ml': 'ai-ml-app-789',
+            'design': 'design-app-101',
+            'gamedev': 'gamedev-app-202',
+            'neurotech': 'neurotech-app-303',
+            'events': 'events-app-404',
+          };
+          const applicationId = applicationIdMap[verticalId || ''] || 'backend-app-123';
+          const detailed = await applicantApi.getApplicationDetails(applicationId);
+          setDetailedApplication(detailed);
+        } catch (error) {
+          console.error("Error fetching detailed application:", error);
+        }
+      }
+    };
+
+    fetchDetailedApplication();
+  }, [verticalId, userData]);
+
+  const handleSubmissionSuccess = () => {
+    // Update submission status to submitted
+    if (detailedApplication && detailedApplication.overallStatus === "in-progress") {
+      setDetailedApplication({
+        ...detailedApplication,
+        currentRound: {
+          ...detailedApplication.currentRound,
+          submissionStatus: "submitted"
+        }
+      });
+    }
+  };
 
   if (!verticalId || !VERTICAL_ICONS[verticalId as keyof typeof VERTICAL_ICONS]) {
     return (
@@ -93,22 +132,8 @@ const VerticalDetails = () => {
     }
   };
 
-  const handleSubmit = () => {
-    // This would make an API call to submit the application
-    console.log('Submitting application:', submissionData);
-    // Update application status
-    if (verticalData) {
-      setVerticalData({ ...verticalData, applicationStatus: 'submitted' });
-    }
-    setIsSubmissionDialogOpen(false);
-  };
-
   const handleOpenSubmission = () => {
     setIsSubmissionDialogOpen(true);
-  };
-
-  const handleSubmissionDataChange = (data: SubmissionData) => {
-    setSubmissionData(data);
   };
 
   return (
@@ -125,24 +150,25 @@ const VerticalDetails = () => {
             onApply={handleApply}
             onOpenSubmission={handleOpenSubmission}
             applicationStatus={verticalData?.applicationStatus || 'not_applied'}
+            detailedApplication={detailedApplication}
           />
 
           {/* Main Content */}
           <div className="flex-1 p-6 bg-gradient-dark">
-            <div className="max-w-7xl mx-auto">
-              {verticalData && <VerticalTabs verticalData={verticalData} />}
+            <div className="max-w-7xl mx-auto space-y-6">
+              {verticalData && <VerticalTabs verticalData={verticalData} detailedApplication={detailedApplication} />}
+
             </div>
           </div>
         </div>
       </div>
 
-      {/* Submission Dialog */}
+      {/* Submission Dialog with Task Submission Form */}
       <SubmissionDialog
         isOpen={isSubmissionDialogOpen}
         onOpenChange={setIsSubmissionDialogOpen}
-        submissionData={submissionData}
-        onSubmissionDataChange={handleSubmissionDataChange}
-        onSubmit={handleSubmit}
+        detailedApplication={detailedApplication}
+        onSubmissionSuccess={handleSubmissionSuccess}
       />
     </SidebarProvider>
   );
