@@ -56,6 +56,17 @@ export default function Hero() {
             <Star key={index} />
           ))}
       </div>
+      {/* <div className="">
+        <img className="" src="./logo.png" />
+      </div> */}
+      <div className="">
+        <h1>BITS x Postman</h1>
+        <h3>API & Coding Innovation Lab</h3>
+        <h2>Recruitments Portal</h2>
+      </div>
+      <div className="absolute w-1/4 top-1/2 left-3/4 -translate-x-1/2 -translate-y-1/2">
+        <img className="w-full h-full" src="./astronaut.webp" />
+      </div>
       <div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4">
         {/* <GoogleLogin onSuccess={handleLogin} theme="filled_black" /> */}
         <button
