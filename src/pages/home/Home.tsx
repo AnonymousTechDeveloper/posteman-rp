@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Hero from "./components/Hero"
@@ -84,18 +84,34 @@ const verticals = [
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null)
   const sectionsRef = useRef<HTMLDivElement>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
+    // Wait for component to mount
+    setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isLoaded) return
+
     const container = containerRef.current
     const sections = sectionsRef.current
 
     if (!container || !sections) return
 
+    // Clear any existing ScrollTriggers
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+
     const getViewportWidth = () => window.innerWidth
     const totalWidth = verticals.length * getViewportWidth()
 
-    gsap.set(sections, { width: totalWidth })
+    // Set initial width
+    gsap.set(sections, {
+      width: totalWidth,
+      x: 0
+    })
 
+    // Create horizontal scroll animation
     const scrollTween = gsap.to(sections, {
       x: () => -(totalWidth - getViewportWidth()),
       ease: "none",
@@ -111,7 +127,6 @@ export default function Home() {
           duration: 0.5,
           delay: 0.1,
         },
-        refreshPriority: -1,
         onRefresh: () => {
           const newTotalWidth = verticals.length * getViewportWidth()
           gsap.set(sections, { width: newTotalWidth })
@@ -130,15 +145,34 @@ export default function Home() {
       scrollTween.kill()
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
     }
-  }, [])
+  }, [isLoaded])
+
+  if (!isLoaded) {
+    return (
+      <div className="w-full h-screen bg-gray-950 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-orange-500 border-t-transparent" />
+      </div>
+    )
+  }
 
   return (
-    <div className="overflow-x-hidden w-full bg-gray-950">
+    <div className="w-full bg-gray-950">
       <Hero />
       <div ref={containerRef} className="relative">
-        <div ref={sectionsRef} className="flex" style={{ height: "100vh" }}>
+        <div
+          ref={sectionsRef}
+          className="flex"
+          style={{
+            height: "100vh",
+            width: `${verticals.length * 100}vw`
+          }}
+        >
           {verticals.map((vertical, index) => (
-            <div key={vertical.name} className="flex-shrink-0" style={{ width: "100vw" }}>
+            <div
+              key={vertical.name}
+              className="flex-shrink-0"
+              style={{ width: "100vw" }}
+            >
               <VerticalSection vertical={vertical} index={index} />
             </div>
           ))}
