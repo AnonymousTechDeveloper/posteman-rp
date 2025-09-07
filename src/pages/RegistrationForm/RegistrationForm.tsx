@@ -19,15 +19,12 @@ const VERTICALS = [
 ];
 
 interface FormData {
-  name: string;
-  email: string;
   phone: string;
+  commitments: string;
   verticals: string[];
 }
 
 interface FormErrors {
-  name?: string;
-  email?: string;
   phone?: string;
   verticals?: string;
 }
@@ -36,9 +33,8 @@ const RegistrationForm = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
     phone: "",
+    commitments: "",
     verticals: [],
   });
   const [errors, setErrors] = useState<FormErrors>({});
@@ -47,20 +43,13 @@ const RegistrationForm = () => {
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    // Name validation
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = "Name must be at least 2 characters";
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
+    // // Email validation
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if (!formData.email.trim()) {
+    //   newErrors.email = "Email is required";
+    // } else if (!emailRegex.test(formData.email)) {
+    //   newErrors.email = "Please enter a valid email address";
+    // }
 
     // Phone validation
     const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
@@ -69,6 +58,8 @@ const RegistrationForm = () => {
     } else if (!phoneRegex.test(formData.phone.replace(/\s/g, ''))) {
       newErrors.phone = "Please enter a valid phone number";
     }
+
+
 
     // Verticals validation
     if (formData.verticals.length === 0) {
@@ -129,10 +120,11 @@ const RegistrationForm = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-xl flex items-center justify-center mb-4 shadow-orange">
-            <Users className="h-8 w-8 text-white" />
+            {/* <Users className="h-8 w-8 text-white" /> */}
+            <img src="./_logo.png" className="w-full h-full" />
           </div>
-          <h1 className="text-3xl font-bold text-white">Join RecruitPortal</h1>
-          <p className="text-gray-400 mt-2">Tell us about yourself and your interests</p>
+          <h1 className="text-3xl font-bold text-white">BITS x Postman</h1>
+          <p className="text-gray-400 mt-2">Recruitment Portal</p>
         </div>
 
         {/* Registration Form */}
@@ -140,61 +132,12 @@ const RegistrationForm = () => {
           <CardHeader>
             <CardTitle className="text-white">Registration Details</CardTitle>
             <CardDescription className="text-gray-400">
-              Fill in your information to get started
+              Fill in the following details
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Field */}
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-white">
-                  Full Name <span className="text-primary">*</span>
-                </Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={formData.name}
-                  onChange={(e) => {
-                    setFormData(prev => ({ ...prev, name: e.target.value }));
-                    if (errors.name) setErrors(prev => ({ ...prev, name: undefined }));
-                  }}
-                  className={`bg-brand-gray border-brand-gray-light text-white placeholder:text-gray-400 focus:border-primary ${errors.name ? "border-destructive focus:border-destructive" : ""
-                    }`}
-                  aria-describedby={errors.name ? "name-error" : undefined}
-                />
-                {errors.name && (
-                  <p id="name-error" className="text-sm text-destructive" role="alert">
-                    {errors.name}
-                  </p>
-                )}
-              </div>
-
-              {/* Email Field */}
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-white">
-                  Email Address <span className="text-primary">*</span>
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email address"
-                  value={formData.email}
-                  onChange={(e) => {
-                    setFormData(prev => ({ ...prev, email: e.target.value }));
-                    if (errors.email) setErrors(prev => ({ ...prev, email: undefined }));
-                  }}
-                  className={`bg-brand-gray border-brand-gray-light text-white placeholder:text-gray-400 focus:border-primary ${errors.email ? "border-destructive focus:border-destructive" : ""
-                    }`}
-                  aria-describedby={errors.email ? "email-error" : undefined}
-                />
-                {errors.email && (
-                  <p id="email-error" className="text-sm text-destructive" role="alert">
-                    {errors.email}
-                  </p>
-                )}
-              </div>
-
               {/* Phone Field */}
               <div className="space-y-2">
                 <Label htmlFor="phone" className="text-white">
@@ -204,6 +147,30 @@ const RegistrationForm = () => {
                   id="phone"
                   type="tel"
                   placeholder="Enter your phone number"
+                  value={formData.phone}
+                  onChange={(e) => {
+                    setFormData(prev => ({ ...prev, phone: e.target.value }));
+                    if (errors.phone) setErrors(prev => ({ ...prev, phone: undefined }));
+                  }}
+                  className={`bg-brand-gray border-brand-gray-light text-white placeholder:text-gray-400 focus:border-primary ${errors.phone ? "border-destructive focus:border-destructive" : ""
+                    }`}
+                  aria-describedby={errors.phone ? "phone-error" : undefined}
+                />
+                {errors.phone && (
+                  <p id="phone-error" className="text-sm text-destructive" role="alert">
+                    {errors.phone}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="commitments" className="text-white">
+                  Current commitments
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="Enter your commitments (include vertical, if any)"
                   value={formData.phone}
                   onChange={(e) => {
                     setFormData(prev => ({ ...prev, phone: e.target.value }));

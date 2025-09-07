@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -197,7 +195,7 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full bg-gray-950">
+    <div className="w-screen-s overflow-hidden bg-gray-950">
       <Hero />
       <div ref={containerRef} className="relative">
         <div
